@@ -11,10 +11,13 @@
   <ItemGroup>
     <Compile Remove="DrmTemplatesDeploy\**" />
     <Compile Remove="DrmTemplates\Output\**" />
+    <Compile Remove="Output\**" />
     <EmbeddedResource Remove="DrmTemplatesDeploy\**" />
     <EmbeddedResource Remove="DrmTemplates\Output\**" />
+    <EmbeddedResource Remove="Output\**" />
     <None Remove="DrmTemplatesDeploy\**" />
     <None Remove="DrmTemplates\Output\**" />
+    <None Remove="Output\**" />
   </ItemGroup>
 
   <ItemGroup>
