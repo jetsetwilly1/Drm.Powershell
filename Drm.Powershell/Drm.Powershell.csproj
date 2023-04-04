@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Drm.Templates.Powershell</AssemblyName>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Version>2.0.0.0</Version>
+    <Product>DRM Templates</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DrmTemplatesDeploy\**" />
+    <Compile Remove="DrmTemplates\Output\**" />
+    <EmbeddedResource Remove="DrmTemplatesDeploy\**" />
+    <EmbeddedResource Remove="DrmTemplates\Output\**" />
+    <None Remove="DrmTemplatesDeploy\**" />
+    <None Remove="DrmTemplates\Output\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DrmDeployment.Services" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Azure.Common" Version="2.2.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Rest.ClientRuntime.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Sdk.Deployment.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Private\Get-KvAccessToken.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Private\Test-CommandExists.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Drm.Templates.Powershell.psd1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Drm.Templates.Powershell.psm1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Crm.Sdk.Proxy.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.IdentityModel.Clients.ActiveDirectory.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Sdk.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Tooling.Connector.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Tooling.CrmConnectControl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Tooling.CrmConnector.Powershell.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DrmTemplates\Microsoft.Xrm.Tooling.CrmConnector.PowerShell\3.3.0.964\Microsoft.Xrm.Tooling.Ui.Styles.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(TargetDir)DrmTemplates\Drm.Powershell\&quot; mkdir $(TargetDir)DrmTemplates\Drm.Powershell&#xD;&#xA;&#xD;&#xA;copy /Y &quot;$(TargetDir)Drm.Templates.Powershell.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Drm.Templates.Powershell.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug copy /Y &quot;$(TargetDir)Drm.Templates.Powershell.pdb&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Drm.Templates.Powershell.pdb&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)drm.Core.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Drm.Core.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug copy /Y &quot;$(TargetDir)drm.Core.pdb&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Drm.Core.pdb&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)drmDeployment.Services.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmDeployment.Services.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug copy /Y &quot;$(TargetDir)drmDeployment.Services.pdb&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmDeployment.Services.pdb&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)drmTemplates.OData.Services.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmTemplates.OData.Services.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug copy /Y &quot;$(TargetDir)drmTemplates.OData.Services.pdb&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmTemplates.OData.Services.pdb&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)drmTemplates.Services.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmTemplates.Services.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug copy /Y &quot;$(TargetDir)drmTemplates.Services.pdb&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\DrmTemplates.Services.pdb&quot;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\newtonsoft.json\13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Newtonsoft.Json.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\esprima\2.0.0-beta-1298\lib\netstandard2.0\Esprima.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Esprima.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\jint\3.0.0-beta-1828\lib\netstandard2.0\Jint.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Jint.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.extensions.logging.abstractions\6.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.Extensions.Logging.Abstractions.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\newtonsoft.json.schema\3.0.14\lib\netstandard2.0\Newtonsoft.Json.Schema.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Newtonsoft.Json.Schema.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\azure.core\1.26.0\lib\netstandard2.0\Azure.Core.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Azure.Core.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.identitymodel.tokens.jwt\6.25.0\lib\netstandard2.0\System.IdentityModel.Tokens.Jwt.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.IdentityModel.Tokens.Jwt.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.identitymodel.tokens\6.25.0\lib\netstandard2.0\Microsoft.IdentityModel.Tokens.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.IdentityModel.Tokens.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.identitymodel.logging\6.25.0\lib\netstandard2.0\Microsoft.IdentityModel.Logging.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.IdentityModel.Logging.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.identitymodel.jsonwebtokens\6.25.0\lib\netstandard2.0\Microsoft.IdentityModel.JsonWebTokens.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.IdentityModel.JsonWebTokens.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.threading.tasks.extensions\4.5.4\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Threading.Tasks.Extensions.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\azure.security.keyvault.secrets\4.4.0\lib\netstandard2.0\Azure.Security.KeyVault.Secrets.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Azure.Security.KeyVault.Secrets.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.text.json\4.7.2\lib\netstandard2.0\System.Text.Json.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Text.Json.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\azure.core\1.25.0\lib\netstandard2.0\Azure.Core.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Azure.Core.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.memory\4.5.4\lib\netstandard2.0\System.Memory.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Memory.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.diagnostics.diagnosticsource\6.0.0\lib\netstandard2.0\System.Diagnostics.DiagnosticSource.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Diagnostics.DiagnosticSource.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.runtime.compilerservices.unsafe\6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Runtime.CompilerServices.Unsafe.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.buffers\4.5.1\lib\netstandard2.0\System.Buffers.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Buffers.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\system.numerics.vectors\4.5.0\lib\netstandard2.0\System.Numerics.Vectors.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\System.Numerics.Vectors.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.aspnetcore.mvc.abstractions\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.AspNetCore.Mvc.Abstractions.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.aspnetcore.mvc.core\2.2.5\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Core.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.AspNetCore.Mvc.Core.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.identity.client\4.50.0\lib\netstandard2.0\Microsoft.Identity.Client.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.Identity.Client.dll&quot;&#xD;&#xA;copy /Y &quot;%25USERPROFILE%25\.nuget\packages\microsoft.identitymodel.abstractions\6.25.0\lib\netstandard2.0\Microsoft.IdentityModel.Abstractions.dll&quot; &quot;$(TargetDir)\DrmTemplates\Drm.Powershell\Microsoft.IdentityModel.Abstractions.dll&quot;&#xD;&#xA;&#xD;&#xA;if exist &quot;$(ProjectDir)Output\Drm.Templates.Powershell\&quot; RMDIR /S /Q $(ProjectDir)Output\Drm.Templates.Powershell\&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)DrmTemplates&quot; $(ProjectDir)Output\Drm.Templates.Powershell /e /y /i /r&#xD;&#xA;&#xD;&#xA;" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="if exist &quot;$(TargetDir)DrmTemplates\&quot; RMDIR /S /Q $(TargetDir)DrmTemplates\&#xD;&#xA;" />
+  </Target>
+
+</Project>
