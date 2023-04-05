@@ -3,15 +3,9 @@
     "Powershell 5": {
       "commandName": "Executable",
       "executablePath": "%SystemRoot%\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
-      "commandLineArgs": "-NoExit -Command \"& { Import-Module \"\"\"$env:VSAPPIDDIR\\..\\Tools\\Microsoft.VisualStudio.DevShell.dll\"\"\"; Enter-VsDevShell -SkipAutomaticLocation -SetDefaultWindowTitle -InstallPath $env:VSAPPIDDIR\\..\\..\\; $Env:PSModulePath = $Env:PSModulePath+';%HOMEPATH%\\source\\repos\\Drm.Powershell\\Drm.Powershell\\Output\\'; Import-Module -Name Drm.Templates.Powershell }\"",
+      "commandLineArgs": "-NoExit -Command \"& { $Env:PSModulePath = $Env:PSModulePath+';$(ProjectDir)\\Output\\'; Import-Module -Name Drm.Templates.Powershell }\"",
       "workingDirectory": "%HOMEDRIVE%%HOMEPATH%",
       "nativeDebugging": false
-    },
-    "Powershell core": {
-      "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoLogo -NoExit -Command \"& { $Env:PSModulePath = $Env:PSModulePath+';%HOMEPATH%\\source\\repos\\Drm.Powershell\\Drm.Powershell\\Output\\'; Import-Module -Name Drm.Templates.Powershell}\"",
-      "workingDirectory": "%HOMEDRIVE%%HOMEPATH%"
     }
   }
 }
