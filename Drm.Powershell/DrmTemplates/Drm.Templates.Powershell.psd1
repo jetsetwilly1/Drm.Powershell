@@ -12,7 +12,7 @@
 RootModule = '.\Drm.Templates.Powershell.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.0.5'
+ModuleVersion = '2.0.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -160,7 +160,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = '
 Changes and enhancements in this release: 
-- Included small bug fixes
+- Small project modifications, powershell module made available at https://github.com/jetsetwilly1/Drm.Powershell
 - This version will now use the new version of schemas located at https://schemas.drmtemplates.io/
 - To get up and running quickly visit the project website: https://docs.drmtemplates.io/tutorials/quickstart.html'
 
