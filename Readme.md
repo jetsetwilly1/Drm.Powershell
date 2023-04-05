@@ -1,5 +1,7 @@
 ﻿# Dynamics Resource Management (DRM) Templates
 
+Download the latest Powershell module: https://www.powershellgallery.com/packages/Drm.Templates.Powershell
+
 ## Build and run the Powershell module
 
 To build the project just run 
