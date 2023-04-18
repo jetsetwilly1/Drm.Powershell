@@ -57,6 +57,7 @@ namespace drm.Powershell
                 && !assemblyName.Name.Equals("System.Runtime.CompilerServices.Unsafe")
                 && !assemblyName.Name.Equals("System.Buffers")
                 && !assemblyName.Name.Equals("System.Numerics.Vectors")
+                && !assemblyName.Name.Equals("System.Text.Json")
                 && !assemblyName.Name.Equals("Microsoft.Identity.Client")
                 && !assemblyName.Name.Equals("Microsoft.IdentityModel.Abstractions"))
             {
@@ -96,6 +97,9 @@ namespace drm.Powershell
 
             if (assemblyName.Name.Equals("Microsoft.Identity.Client"))
                 return Assembly.LoadFrom(Path.Combine(s_modulePath, "Microsoft.Identity.Client.dll"));
+
+            if (assemblyName.Name.Equals("System.Text.Json"))
+                return Assembly.LoadFrom(Path.Combine(s_modulePath, "System.Text.Json.dll"));
 
 
             return null;
