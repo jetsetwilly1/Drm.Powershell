@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -38,12 +39,30 @@ namespace drm.Powershell.DrmTemplates
 
             _templateService = new GenerateTemplateService(templateLogger, entityApi);
         }
+        public string Template = string.Empty;
 
-        public async Task<string> GenerateTemplate(string filter)
+        public async Task<string> GenerateTemplateAsync(string filter)
         {
             var r = await _templateService.GenerateTemplate(filter) as ResponseEnvelopeResult<GenerateTemplateResponseModel>;
             var resp = r.Value as ResponseEnvelope<GenerateTemplateResponseModel>;
+            
+            if(r.StatusCode == 200)
+            {
+                Template = resp.Data.Template;
+                // remove template before returning resp
+                resp.Data.Template = "{}";
+            }           
+
             return JsonConvert.SerializeObject(resp);
+        }
+
+        public void WriteTemplateToFile(string location)
+        {
+            var responseData = JsonConvert.DeserializeObject(Template);
+
+            string jsonData = JsonConvert.SerializeObject(responseData, Formatting.Indented);
+
+            File.WriteAllText(location, jsonData);
         }
     }
 

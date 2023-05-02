@@ -12,7 +12,7 @@
 RootModule = '.\Drm.Templates.Powershell.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.0.8'
+ModuleVersion = '2.0.9'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,10 +27,12 @@ Author = 'Stuart Elcocks'
 #CompanyName = ''
 
 # Copyright statement for this module
-#Copyright = '(c) 2023. All rights reserved.'
+Copyright = '(c) 2023. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Drm Template Tools, Generate and deploy DRM templates as part of your automation setup.'
+Description = 'Drm Template Tools allows you to generate and deploy configuration templates to your Microsoft Dynamics 365 online environments.
+    DRM is a wrapper utility around the Dynamics 365 online web api that allows you to configure and maintain many Dynamics entities. https://docs.drmtemplates.io/drmtemplates/supported-web-api-entities.html
+    Check out the documentation here https://docs.drmtemplates.io/ to see how easy it is to get up and running quickly.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.0'
@@ -160,9 +162,9 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = '
 Changes and enhancements in this release: 
-- Fixed keyvault secrets not escaping properly.
-- Small project modifications, powershell module made available at https://github.com/jetsetwilly1/Drm.Powershell
-- This version will now use the new version of schemas located at https://schemas.drmtemplates.io/
+- Bug fixes around the New-DrmTemplate cmdlet
+- Powershell module made available at https://github.com/jetsetwilly1/Drm.Powershell
+- Schemas located at https://schemas.drmtemplates.io/
 - To get up and running quickly visit the project website: https://docs.drmtemplates.io/tutorials/quickstart.html'
 
         # Prerelease string of this module
