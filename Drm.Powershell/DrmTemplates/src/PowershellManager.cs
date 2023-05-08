@@ -45,13 +45,13 @@ namespace drm.Powershell.DrmTemplates
         {
             var r = await _templateService.GenerateTemplate(filter) as ResponseEnvelopeResult<GenerateTemplateResponseModel>;
             var resp = r.Value as ResponseEnvelope<GenerateTemplateResponseModel>;
-            
-            if(r.StatusCode == 200)
+
+            if (r.StatusCode == 200)
             {
                 Template = resp.Data.Template;
                 // remove template before returning resp
                 resp.Data.Template = "{}";
-            }           
+            }
 
             return JsonConvert.SerializeObject(resp);
         }
@@ -194,6 +194,16 @@ namespace drm.Powershell.DrmTemplates
                                 Log.Template + "{instanceId} Workflow failed. An Exception was thrown during the deployment phase.  Likely cause is Entity api(s) unavailable.",
                             Log.Status.Failed, instanceId);
 
+                            foreach (var e in deployLogs.Log)
+                            {
+                                var respJson = JsonConvert.SerializeObject(e.Response);
+
+                                _powershellDeploymentLogger.ClientJobId = instanceId;
+                                _powershellDeploymentLogger.LogTo = LogType.ToClient;
+                                _powershellDeploymentLogger.LogError((int)Log.DeploymentMgrEventId.DeploymentManager,
+                                    "Error while deploying resource '{0}' error details {1}", e.ResourceName, respJson);
+                            }
+
                             _powershellDeploymentLogger.ClientJobId = instanceId;
                             _powershellDeploymentLogger.LogTo = LogType.ToClient;
                             _powershellDeploymentLogger.LogError((int)Log.DeploymentMgrEventId.DeploymentManager,
@@ -210,6 +220,15 @@ namespace drm.Powershell.DrmTemplates
                                 Log.Template + "{instanceId} Workflow failed. Client notified of issues.",
                                 Log.Status.Discarded, instanceId);
 
+                            foreach (var e in deployLogs.Log)
+                            {
+                                var respJson = JsonConvert.SerializeObject(e.Response);
+
+                                _powershellDeploymentLogger.ClientJobId = instanceId;
+                                _powershellDeploymentLogger.LogTo = LogType.ToClient;
+                                _powershellDeploymentLogger.LogError((int)Log.DeploymentMgrEventId.DeploymentManager,
+                                    "Error while deploying resource '{0}' error details {1}", e.ResourceName, respJson);
+                            }
 
                             _powershellDeploymentLogger.ClientJobId = instanceId;
                             _powershellDeploymentLogger.LogTo = LogType.ToClient;
