@@ -4,6 +4,235 @@ ForEach-Object {
     . $_.FullName
 }
 
+function Get-DynamicsAutoNumber{
+    <#
+	.SYNOPSIS 
+    Connect to Dataverse and Get the value needed for a seed autonumber field this is to
+    be run before release, then call the function Set-DynamicsAutoNumber to set the field after release
+
+	.NOTES      
+    Author     : Dave Langan
+    
+    .PARAMETER $TenantID
+    The tenant ID for the environment
+    
+    .PARAMETER $appId
+    The Application (client) ID of the App registration
+
+    .PARAMETER $clientSecret
+    The client secret generated within the App registration
+
+    .PARAMETER $dataverseEnvUrl
+    The url of the Dataverse environment you want to connect to
+
+    .PARAMETER $EntityName
+    The name of the entity in the dataverse to use
+
+    .PARAMETER $FieldName
+    The name of the field to get the next autonumber for
+
+    .PARAMETER $VarName
+    The name of the variable to set in ADO with the Seed value which is incremented by 1
+    #>
+
+    [CmdletBinding()]    
+    PARAM (
+    [Parameter(Mandatory=$true)] [string]$TenantId,
+    [Parameter(Mandatory=$true)] [string]$ClientId,
+    [Parameter(Mandatory=$true)] [string]$ClientSecret,
+    [Parameter(Mandatory=$true)] [string]$dataverseEnvUrl,
+    [Parameter(Mandatory=$true)] [string]$EntityName, 
+    [Parameter(Mandatory=$true)] [string]$FieldName, 
+    [Parameter(Mandatory=$true)] [string]$VarName 
+    )
+
+    $appId = $ClientId
+
+    $oAuthTokenEndpoint = 'https://login.microsoftonline.com/' + $TenantId + '/oauth2/v2.0/token'
+    
+    $appId = $ClientId
+
+
+    ##########################################################
+    # Access Token Request
+    ##########################################################
+
+    # OAuth Body Access Token Request
+    $authBody = 
+    @{
+        client_id = $appId;
+        client_secret = $clientSecret;    
+        # The v2 endpoint for OAuth uses scope instead of resource
+        scope = "$($dataverseEnvUrl)/.default"    
+        grant_type = 'client_credentials'
+    }
+
+    # Parameters for OAuth Access Token Request
+    $authParams = 
+    @{
+        URI = $oAuthTokenEndpoint
+        Method = 'POST'
+        ContentType = 'application/x-www-form-urlencoded'
+        Body = $authBody
+    }
+
+    # Get Access Token
+    $authRequest = Invoke-RestMethod @authParams -ErrorAction Stop
+    $authResponse = $authRequest
+
+    ##########################################################
+    # Call Dataverse WebAPI using Authentication Token
+    ##########################################################
+
+    # Params related to the Dataverse WebAPI call you will be making.
+    # These need to be in single quotes to ensure they are not expanded.
+    $uriParams = '$select=DisplayName,Settings'
+
+    # Parameters for the Dataverse WebAPI call which includes our header
+    # that carries the access token.
+    $apiCallParams =
+    @{
+        URI = "$($dataverseEnvUrl)/api/data/v9.2/GetNextAutoNumberValue"
+        Headers = @{
+            "Authorization" = "$($authResponse.token_type) $($authResponse.access_token)";
+            "Content-Type" = "application/json"; 
+        }
+        Method = 'POST'
+    }
+
+    $params = @{
+        "EntityName"="$EntityName"
+        "AttributeName"="$FieldName"
+    #    "Value"=1002
+
+    } | ConvertTo-Json
+
+    # Call the Dataverse WebAPI
+    $apiCallRequest = Invoke-RestMethod @apiCallParams -Body $params -ErrorAction Stop
+    $apiCallResponse = $apiCallRequest
+
+    #Output the results
+    Write-Host "Seed value is set to " $apiCallResponse.NextAutoNumberValue.ToString() 
+
+    $SeedNumber1 = $apiCallResponse.NextAutoNumberValue.tostring()
+    [int]$SeedNumber = $SeedNumber1 + 1
+    Write-Host ("##vso[task.setvariable variable=$VarName;isOutput=true;]$SeedNumber")
+    Write-Host "##vso[task.setvariable variable=Seed;]$SeedNumber"
+    return $SeedNumber1
+}
+
+function Set-DynamicsAutoNumber{
+    <#
+	.SYNOPSIS 
+    Connect to Dataverse and Set the Seed value for an autonumber field this is to
+    be run after release, it useses the ADO variable created by Get-DynamicsAutoNumber
+
+	.NOTES      
+    Author     : Dave Langan
+    
+    .PARAMETER $TenantID
+    The tenant ID for the environment
+    
+    .PARAMETER $appId
+    The Application (client) ID of the App registration
+
+    .PARAMETER $clientSecret
+    The client secret generated within the App registration
+
+    .PARAMETER $dataverseEnvUrl
+    The url of the Dataverse environment you want to connect to
+
+    .PARAMETER $EntityName
+    The name of the entity in the dataverse to use
+
+    .PARAMETER $FieldName
+    The name of the field to set the next autonumber seed value for
+
+    .PARAMETER $SeedValue
+    The name of the variable to use in ADO to set the seed value populated by the script Dynamicsautonumberget.ps1
+    #>
+
+    [CmdletBinding()]    
+    PARAM (
+    [Parameter(Mandatory=$true)] [string]$TenantId,
+    [Parameter(Mandatory=$true)] [string]$ClientId,
+    [Parameter(Mandatory=$true)] [string]$ClientSecret,
+    [Parameter(Mandatory=$true)] [string]$dataverseEnvUrl,
+    [Parameter(Mandatory=$true)] [string]$EntityName, 
+    [Parameter(Mandatory=$true)] [string]$FieldName, 
+    [Parameter(Mandatory=$true)] [int]$SeedValue 
+    )
+
+    $appId = $ClientId
+
+
+    $oAuthTokenEndpoint = 'https://login.microsoftonline.com/' + $TenantId + '/oauth2/v2.0/token'
+    
+    $appId = $ClientId
+
+    ##########################################################
+    # Access Token Request
+    ##########################################################
+
+    # OAuth Body Access Token Request
+    $authBody = 
+    @{
+        client_id = $appId;
+        client_secret = $clientSecret;    
+        # The v2 endpoint for OAuth uses scope instead of resource
+        scope = "$($dataverseEnvUrl)/.default"    
+        grant_type = 'client_credentials'
+    }
+
+    # Parameters for OAuth Access Token Request
+    $authParams = 
+    @{
+        URI = $oAuthTokenEndpoint
+        Method = 'POST'
+        ContentType = 'application/x-www-form-urlencoded'
+        Body = $authBody
+    }
+
+    # Get Access Token
+    $authRequest = Invoke-RestMethod @authParams -ErrorAction Stop
+    $authResponse = $authRequest
+
+    ##########################################################
+    # Call Dataverse WebAPI using Authentication Token
+    ##########################################################
+
+    # Params related to the Dataverse WebAPI call you will be making.
+    # These need to be in single quotes to ensure they are not expanded.
+    $uriParams = '$select=DisplayName,Settings'
+
+    # Parameters for the Dataverse WebAPI call which includes our header
+    # that carries the access token.
+    $apiCallParams =
+    @{
+        URI = "$($dataverseEnvUrl)/api/data/v9.2/SetAutoNumberSeed"
+        Headers = @{
+            "Authorization" = "$($authResponse.token_type) $($authResponse.access_token)";
+            "Content-Type" = "application/json"; 
+        }
+        Method = 'POST'
+    }
+
+    $params = @{
+        "EntityName"="$EntityName"
+        "AttributeName"="$FieldName"
+        "Value"= $SeedValue
+
+    } | ConvertTo-Json
+
+    # Call the Dataverse WebAPI
+    $apiCallRequest = Invoke-RestMethod @apiCallParams -Body $params -ErrorAction Stop
+    $apiCallResponse = $apiCallRequest
+
+    #Output the results
+    Write-Host "Seed value is set to $SeedValue for field $FieldName in entity $EntityName"
+}
+
+
 function Set-SolutionEnvironmentVariables{
     <#
     .SYNOPSIS
