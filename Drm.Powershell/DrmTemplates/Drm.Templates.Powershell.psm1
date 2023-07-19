@@ -7,7 +7,11 @@ ForEach-Object {
 function Set-SolutionWorkflowsState{
     <#
 	.SYNOPSIS 
-        Connect to Dataverse and bulk turn off/on cloudflows for a specific solution.
+        Connect to Dataverse and bulk turn off/on cloudflows associated with a specific solution.
+
+    .DESCRIPTION
+        Connect to a Dataverse instance using Connect-CrmOnline. Provide the solution name where 
+        cloudflows have been configured and that you want to turn off or on.
 
 	.NOTES      
         Author     : Danny Styles
@@ -74,7 +78,7 @@ function Set-SolutionWorkflowsState{
             <link-entity name='solutioncomponent' from='objectid' to='workflowid'>
                 <link-entity name='solution' from='solutionid' to='solutionid'>
                 <filter>
-                    <condition attribute='uniquename' operator='eq' value='$($solutionName)' />
+                    <condition attribute='uniquename' operator='eq' value='$($SolutionName)' />
                 </filter>
                 </link-entity>
             </link-entity>
@@ -83,12 +87,14 @@ function Set-SolutionWorkflowsState{
 "@;
     # perform the query    
     $flows = (Get-CrmRecordsByFetch  -conn $conn -Fetch $fetchFlows -Verbose).CrmRecords
+    
     # if nothing comes back.. exit
     if ($flows.Count -eq 0) {
-        Write-Host "##vso[task.logissue type=warning]No Flows that are turned $requiredState in '$solutionName'."
-        Write-Output "'$solutionName' $message"
+        Write-Host "##vso[task.logissue type=warning]No Flows that are turned $requiredState in '$SolutionName'."
+        Write-Output "'$SolutionName' $message"
         exit(0)
     }        
+    
     # Turn on/off flows
     foreach ($flow in $flows) {
         $flowname = $flow.name
