@@ -4,6 +4,102 @@ ForEach-Object {
     . $_.FullName
 }
 
+function Set-WorkflowsOwner {
+    <#
+    .SYNOPSIS 
+        Update the owner of all cloudflows in a Dynamics environment.
+
+    .DESCRIPTION
+        Connect to a Dataverse instance using Connect-CrmOnline. Provide the Dataverse environment url and
+        the full name of a system user account.
+
+    .NOTES      
+        Author     : Danny Styles
+
+    .PARAMETER DataverseEnvUrl
+        The url of the dataverse environment.
+
+    .PARAMETER NewFlowOwner
+        The full name of a system user account.
+
+    .EXAMPLE
+        Set-WorkflowsOwner -DataverseEnvUrl "https://drmdemo.crm4.dynamics.com" -NewFlowOwner "Danny Styles"
+    #>
+
+    [CmdletBinding()]    
+    PARAM (
+    [Parameter(Mandatory=$true)] [string]$DataverseEnvUrl,
+    [Parameter(Mandatory=$true)] [string]$NewFlowOwner
+    )
+
+    # Check connection has been made to dataverse env.
+    if ($null -eq $env:conn) 
+    { 
+        Write-Error "Please use Connect-CrmOnline to connect to a dataverse environment first." 
+        throw "No connection to Dataverse environment."
+    }
+
+    ##########################################################
+    # Call Dataverse WebAPI using Authentication Token
+    ##########################################################
+
+    # Parameters for the Dataverse WebAPI call which includes our header
+    # that carries the access token.
+    $apiCallParams =
+    @{
+        URI = $DataverseEnvUrl+ "/api/data/v9.2/systemusers"
+        Headers = @{
+            "Authorization" = "Bearer $($conn.CurrentAccessToken)";
+            "Content-Type" = "application/json"; 
+            "Accept" = "application/json";
+            "Prefer" = "odata.include-annotations="*"";
+        }
+        Method = 'GET'
+    }
+
+    # Call the Dataverse WebAPI
+    $apiCallRequest = Invoke-RestMethod @apiCallParams -ErrorAction Stop
+    $SystemUser = $apiCallRequest.value | where-object fullname -eq 'SYSTEM'
+    $NewUser = $apiCallRequest.value | where-object fullname -eq "$NewFlowOwner"
+
+    $apiCallParams =
+    @{
+        URI = $dataverseEnvUrl+ '/api/data/v9.2/workflows?$filter=category eq 5&$expand=ownerid,owninguser($select=fullname)'
+        Headers = @{
+            "Authorization" = "Bearer $($conn.CurrentAccessToken)";
+            "Content-Type" = "application/json"; 
+            "Accept" = "application/json";
+
+        }
+        Method = 'GET'
+    }
+    $apiCallRequest = Invoke-RestMethod @apiCallParams -ErrorAction Stop
+    $workflows = $apiCallRequest.value | where-object _owninguser_value -ne $SystemUser.systemuserid
+    $workflows = $workflows | where-object _owninguser_value -ne $NewUser.systemuserid
+
+    foreach($Flow in $workflows){
+        $uri = $dataverseEnvUrl+ '/api/data/v9.2/workflows(' + $flow.workflowid  + ')'
+        $apiCallParams =
+        @{
+            URI =    $Uri
+            Headers = @{
+                "Authorization" = "Bearer $($conn.CurrentAccessToken)";
+                "Content-Type" = "application/json"; 
+                "Accept" = "application/json";
+
+            }
+            Method = 'PATCH'
+        }
+
+        $params = @{
+        "ownerid@odata.bind"="/systemusers(" + $NewUser.systemuserid + ")"
+        } | ConvertTo-Json
+
+        write-host "Updating " $Flow.name
+        $apiCallRequest = Invoke-RestMethod @apiCallParams -Body $params -ErrorAction Stop
+    }
+}
+
 function Get-DynamicsAutoNumber{
     <#
 	.SYNOPSIS 
