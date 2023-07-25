@@ -4,7 +4,7 @@ ForEach-Object {
     . $_.FullName
 }
 
-function Set-SolutionWorkflowsState{
+function Set-SolutionCloudflowsState{
     <#
 	.SYNOPSIS 
         Connect to Dataverse and bulk turn off/on cloudflows associated with a specific solution.
@@ -23,7 +23,7 @@ function Set-SolutionWorkflowsState{
         The unique name of the solution.
 
     .EXAMPLE
-        Set-WorkflowState -RequiredState On -SolutionName drmCloudflowsSolution
+        Set-SolutionCloudflowsState -RequiredState On -SolutionName drmCloudflowsSolution
     #>
 
     [CmdletBinding()]  
@@ -43,7 +43,7 @@ function Set-SolutionWorkflowsState{
     }
 
     # Check connection has been made to dataverse env.
-    if ($null -eq $env:conn) 
+    if ($null -eq $conn) 
     { 
         Write-Error "Please use Connect-CrmOnline to connect to a dataverse environment first." 
         throw "No connection to Dataverse environment."
