@@ -4,40 +4,38 @@ ForEach-Object {
     . $_.FullName
 }
 
-function Set-WorkflowsOwner {
+function Set-CloudflowsOwner {
     <#
     .SYNOPSIS 
         Update the owner of all cloudflows in a Dynamics environment.
 
     .DESCRIPTION
-        Connect to a Dataverse instance using Connect-CrmOnline. Provide the Dataverse environment url and
-        the full name of a system user account.
+        Connect to a Dataverse instance using Connect-CrmOnline and provide
+        the full name of a system user account to update all workflows to a new owner.
 
     .NOTES      
         Author     : Danny Styles
-
-    .PARAMETER DataverseEnvUrl
-        The url of the dataverse environment.
 
     .PARAMETER NewFlowOwner
         The full name of a system user account.
 
     .EXAMPLE
-        Set-WorkflowsOwner -DataverseEnvUrl "https://drmdemo.crm4.dynamics.com" -NewFlowOwner "Danny Styles"
+        Set-CloudflowsOwner -NewFlowOwner "Danny Styles"
     #>
 
     [CmdletBinding()]    
     PARAM (
-    [Parameter(Mandatory=$true)] [string]$DataverseEnvUrl,
     [Parameter(Mandatory=$true)] [string]$NewFlowOwner
     )
 
     # Check connection has been made to dataverse env.
-    if ($null -eq $env:conn) 
+    if ($null -eq $conn) 
     { 
         Write-Error "Please use Connect-CrmOnline to connect to a dataverse environment first." 
         throw "No connection to Dataverse environment."
     }
+
+    $DataverseEnvUrl = $conn.CrmConnectOrgUriActual.Scheme+"://"+$conn.CrmConnectOrgUriActual.Host
 
     ##########################################################
     # Call Dataverse WebAPI using Authentication Token
