@@ -12,7 +12,7 @@
 RootModule = '.\Drm.Templates.Powershell.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.1.2'
+ModuleVersion = '2.1.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -106,7 +106,7 @@ RequiredAssemblies = @(
 NestedModules = @('.\Drm.Powershell\Drm.Templates.Powershell.dll','Microsoft.Xrm.Tooling.CrmConnector.Powershell')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Set-CloudflowsOwner','New-DrmTemplate','Set-SolutionEnvironmentVariables', 'Connect-CrmOnline','Get-DynamicsAutoNumber','Set-DynamicsAutoNumber')
+FunctionsToExport = @('Set-CloudflowsOwner','New-DrmTemplate','Set-SolutionEnvironmentVariables', 'Connect-CrmOnline','Get-DynamicsAutoNumber','Set-DynamicsAutoNumber', 'Set-CloudflowsOwner')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
@@ -160,7 +160,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = '
 Changes and enhancements in this release: 
-- Added two new functions Get-DynamicsAutoNumber and Set-DynamicsAutoNumber from Dave Langan to help configure Seed configuration via pipelines.
+- Added new function Set-CloudflowsOwner from Danny Styles 
 - Powershell module is available at https://github.com/jetsetwilly1/Drm.Powershell
 - Schemas located at https://schemas.drmtemplates.io/
 - To get up and running quickly visit the project website: https://docs.drmtemplates.io/tutorials/quickstart.html'
