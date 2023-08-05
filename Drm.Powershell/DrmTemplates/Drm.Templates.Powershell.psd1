@@ -161,8 +161,8 @@ PrivateData = @{
         ReleaseNotes = '
 Changes and enhancements in this release: 
 - Added new function Set-SolutionCloudflowsState from Danny Styles.
-- Fixed bug relating to custom lookup columns not patching correctly.
 - Added new function Set-CloudflowsOwner from Danny Styles 
+- Fixed bug relating to custom lookup columns not patching correctly.
 - Powershell module is available at https://github.com/jetsetwilly1/Drm.Powershell
 - Schemas located at https://schemas.drmtemplates.io/
 - To get up and running quickly visit the project website: https://docs.drmtemplates.io/tutorials/quickstart.html'
