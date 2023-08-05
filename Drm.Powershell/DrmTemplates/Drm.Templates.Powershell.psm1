@@ -116,7 +116,7 @@ function Get-DynamicsAutoNumber{
     .PARAMETER $clientSecret
     The client secret generated within the App registration
 
-    .PARAMETER $dataverseEnvUrl
+    .PARAMETER $DataverseEnvUrl
     The url of the Dataverse environment you want to connect to
 
     .PARAMETER $EntityName
@@ -233,7 +233,7 @@ function Set-DynamicsAutoNumber{
     .PARAMETER $clientSecret
     The client secret generated within the App registration
 
-    .PARAMETER $dataverseEnvUrl
+    .PARAMETER $DataverseEnvUrl
     The url of the Dataverse environment you want to connect to
 
     .PARAMETER $EntityName
