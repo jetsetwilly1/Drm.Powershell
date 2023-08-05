@@ -134,7 +134,7 @@ function Get-DynamicsAutoNumber{
     [Parameter(Mandatory=$true)] [string]$TenantId,
     [Parameter(Mandatory=$true)] [string]$ClientId,
     [Parameter(Mandatory=$true)] [string]$ClientSecret,
-    [Parameter(Mandatory=$true)] [string]$dataverseEnvUrl,
+    [Parameter(Mandatory=$true)] [string]$DataverseEnvUrl,
     [Parameter(Mandatory=$true)] [string]$EntityName, 
     [Parameter(Mandatory=$true)] [string]$FieldName, 
     [Parameter(Mandatory=$true)] [string]$VarName 
@@ -251,7 +251,7 @@ function Set-DynamicsAutoNumber{
     [Parameter(Mandatory=$true)] [string]$TenantId,
     [Parameter(Mandatory=$true)] [string]$ClientId,
     [Parameter(Mandatory=$true)] [string]$ClientSecret,
-    [Parameter(Mandatory=$true)] [string]$dataverseEnvUrl,
+    [Parameter(Mandatory=$true)] [string]$DataverseEnvUrl,
     [Parameter(Mandatory=$true)] [string]$EntityName, 
     [Parameter(Mandatory=$true)] [string]$FieldName, 
     [Parameter(Mandatory=$true)] [int]$SeedValue 
