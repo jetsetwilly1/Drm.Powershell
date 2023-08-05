@@ -106,7 +106,7 @@ RequiredAssemblies = @(
 NestedModules = @('.\Drm.Powershell\Drm.Templates.Powershell.dll','Microsoft.Xrm.Tooling.CrmConnector.Powershell')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('New-DrmTemplate','Set-SolutionEnvironmentVariables', 'Connect-CrmOnline','Get-DynamicsAutoNumber','Set-DynamicsAutoNumber','Set-SolutionCloudflowsState')
+FunctionsToExport = @('New-DrmTemplate','Set-SolutionEnvironmentVariables', 'Connect-CrmOnline','Get-DynamicsAutoNumber','Set-DynamicsAutoNumber','Set-SolutionCloudflowsState', 'Set-CloudflowsOwner')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
@@ -161,6 +161,7 @@ PrivateData = @{
         ReleaseNotes = '
 Changes and enhancements in this release: 
 - Added new function Set-SolutionCloudflowsState from Danny Styles.
+- Added new function Set-CloudflowsOwner from Danny Styles 
 - Fixed bug relating to custom lookup columns not patching correctly.
 - Powershell module is available at https://github.com/jetsetwilly1/Drm.Powershell
 - Schemas located at https://schemas.drmtemplates.io/
