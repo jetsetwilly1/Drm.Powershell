@@ -4,6 +4,114 @@ ForEach-Object {
     . $_.FullName
 }
 
+function Set-SolutionCloudflowsState{
+    <#
+	.SYNOPSIS 
+        Connect to Dataverse and bulk turn off/on cloudflows associated with a specific solution.
+
+    .DESCRIPTION
+        Connect to a Dataverse instance using Connect-CrmOnline. Provide the solution name where 
+        cloudflows have been configured and that you want to turn off or on.
+
+	.NOTES      
+        Author     : Danny Styles
+    
+    .PARAMETER RequiredState
+        The required state for the workflows.
+    
+    .PARAMETER SolutionName
+        The unique name of the solution.
+
+    .EXAMPLE
+        Set-SolutionCloudflowsState -RequiredState On -SolutionName drmCloudflowsSolution
+    #>
+
+    [CmdletBinding()]  
+    PARAM 
+    ( 
+    [Parameter(Mandatory=$true)][ValidateSet('On','Off')][String]$RequiredState,
+    [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()][String]$SolutionName
+    ) 
+
+    # Check Microsoft.Xrm.Data.PowerShell has been imported first
+    $m = Get-Module -Name 'Microsoft.Xrm.Data.PowerShell' | measure
+
+    if($m.Count -ne 1)
+    {
+        Write-Warning "Please import Microsoft.Xrm.Data.PowerShell to use this command."
+        throw "Microsoft.Xrm.Data.PowerShell is required."
+    }
+
+    # Check connection has been made to dataverse env.
+    if ($null -eq $conn) 
+    { 
+        Write-Error "Please use Connect-CrmOnline to connect to a dataverse environment first." 
+        throw "No connection to Dataverse environment."
+    }
+
+    # Prepare...
+    Write-Output "Required state: $requiredState ... getting cloudflow information"
+    switch ($requiredState) {
+        "on" {
+            $statecode=0
+            $message = "contains no flows in the OFF state - nothing to do"
+        }
+        "off"{
+            $statecode=1
+            $message = "contains no flows in the ON state - nothing to do"
+        }  
+        Default{}
+    }
+
+    # the $statecode from above and solutionName are passed into the fetchXML below for our query
+    # Get the flows that are turned off/on
+    $fetchFlows = @"
+        <fetch>
+            <entity name='workflow'>
+            <attribute name='category' />
+            <attribute name='name' />
+            <attribute name='statecode' />
+            <filter>
+                <condition attribute='category' operator='eq' value='5' />
+                <condition attribute='statecode' operator='eq' value='$($statecode)' />
+            </filter>
+            <link-entity name='solutioncomponent' from='objectid' to='workflowid'>
+                <link-entity name='solution' from='solutionid' to='solutionid'>
+                <filter>
+                    <condition attribute='uniquename' operator='eq' value='$($SolutionName)' />
+                </filter>
+                </link-entity>
+            </link-entity>
+            </entity>
+        </fetch>
+"@;
+    # perform the query    
+    $flows = (Get-CrmRecordsByFetch  -conn $conn -Fetch $fetchFlows -Verbose).CrmRecords
+    
+    # if nothing comes back.. exit
+    if ($flows.Count -eq 0) {
+        Write-Host "##vso[task.logissue type=warning]No Flows that are turned $requiredState in '$SolutionName'."
+        Write-Output "'$SolutionName' $message"
+        exit(0)
+    }        
+    
+    # Turn on/off flows
+    foreach ($flow in $flows) {
+        $flowname = $flow.name
+        Write-Output "Turning $requiredState Flow:$flowname"
+        switch ($requiredState) {
+            "on" {
+                Set-CrmRecordState -EntityLogicalName workflow -Id $flow.workflowid -StateCode Activated -StatusCode Activated -Verbose 
+            }
+            "off" {
+                Set-CrmRecordState -EntityLogicalName workflow -Id $flow.workflowid -StateCode Draft -StatusCode Draft -Verbose 
+            
+            }
+            Default {}
+        } 
+    }
+}
+
 function Set-CloudflowsOwner {
     <#
     .SYNOPSIS 
