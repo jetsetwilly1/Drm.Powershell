@@ -12,7 +12,7 @@
 RootModule = '.\Drm.Templates.Powershell.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.1.3'
+ModuleVersion = '2.1.4'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -160,9 +160,7 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = '
 Changes and enhancements in this release: 
-- Added new function Set-SolutionCloudflowsState from Danny Styles.
-- Added new function Set-CloudflowsOwner from Danny Styles 
-- Fixed bug relating to custom lookup columns not patching correctly.
+- Fixed minor bug relating to base url composition.
 - Powershell module is available at https://github.com/jetsetwilly1/Drm.Powershell
 - Schemas located at https://schemas.drmtemplates.io/
 - To get up and running quickly visit the project website: https://docs.drmtemplates.io/tutorials/quickstart.html'
