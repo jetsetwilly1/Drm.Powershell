@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DrmDeployment.Services" Version="1.0.7" />
+    <PackageReference Include="DrmDeployment.Services" Version="1.0.8" />
     <PackageReference Include="Microsoft.Azure.Common" Version="2.2.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.0" />
